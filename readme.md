@@ -17,4 +17,3 @@ Espécies no catálogo:
    veado, sapo, cobra, rato, cuica, macaco, jabuti, jacare, gaviao, irara, porco, cachorro, preguica, gato, cutia, tamandua, capivara, lagarto, quati e gamba.
 
 
-![image](https://github.com/alexandrehdd/zoombee_rna/assets/78443037/a6dae5b9-55f9-4ab8-9e89-3ba24831f0f4)
