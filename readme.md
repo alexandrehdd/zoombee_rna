@@ -16,5 +16,7 @@ O aumento de dados permitiu que o modelo fosse exposto a uma variedade maior de 
 Espécies no catálogo:
    veado, sapo, cobra, rato, cuica, macaco, jabuti, jacare, gaviao, irara, porco, cachorro, preguica, gato, cutia, tamandua, capivara, lagarto, quati e gamba.
 
+**Imagem Original*** 
 ![image](https://github.com/alexandrehdd/zoombee_rna/assets/78443037/a3ff485e-a992-4bf9-9ae5-ec1c44e4da68)
 
+**Imagem Aumentada**
