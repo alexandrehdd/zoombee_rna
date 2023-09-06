@@ -1,8 +1,8 @@
 # Zoombee - Identificação de espécie animal por meio de Redes Neurais Convolucionais
 
  
-1 - Primeira Etapa: 
-Essa fase foi dedicada a obtenção de um modelo  a partir do dataset 
+1 - Primeira Etapa: Obtenção de um modelo  a partir do dataset público Snapshot Serengethi.
+
 
 2 - Segunda Etapa:
  https://drive.google.com/drive/folders/1_Q4s_TdpjXTcMhtWXDbkVtRllZQvl6ES?usp=sharing
