@@ -3,7 +3,7 @@
  
 1 - Primeira Etapa: Obtenção de modelo para classificação de espécies animais a partir do dataset público Snapshot Serengethi.
 
-**CNN_RESNET.ipynb**
+**CNN_RESNET_ETAPA_1.ipynb**
 
 2 - Segunda Etapa:
  https://drive.google.com/drive/folders/1_Q4s_TdpjXTcMhtWXDbkVtRllZQvl6ES?usp=sharing
