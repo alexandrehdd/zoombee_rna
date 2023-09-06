@@ -8,6 +8,8 @@
 2 - Segunda Etapa:
  https://drive.google.com/drive/folders/1_Q4s_TdpjXTcMhtWXDbkVtRllZQvl6ES?usp=sharing
 
+ **Zoombee_Imagens_Catalogo-DataAugmentation_20Images_PerClass-WithCrop_ETAPA_2.ipynb**
+
 O objetivo dessa etapa é a obtenção de classificador para as imagens do catálogo da Vale, com base na extração de características de um modelo pré-treinado obtido na primeira etapa. No entanto, um dos principais desafios enfrentados foi o desequilíbrio na quantidade de imagens disponíveis para cada espécie animal, com um total de apenas 122 imagens. Esse desequilíbrio poderia prejudicar a capacidade do modelo de realizar classificações precisas e robustas.
 
 Para superar esse desafio, implementamos a técnica de aumento de dados (data augmentation). Essa técnica envolve a geração de amostras adicionais a partir das imagens originais, aplicando diversas operações de transformação, como variações de ângulo de visão, ajustes de brilho, contraste e outras modificações. Com esse procedimento, conseguimos artificialmente expandir o nosso conjunto de dados original de 122 imagens.
