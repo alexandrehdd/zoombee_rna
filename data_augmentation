@@ -5,10 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from skimage.io import imread
 from skimage import exposure
+from scipy.ndimage import zoom
 from collections import Counter
 import gc
-from scipy.ndimage import zoom
-%matplotlib inline
 
 rotation_angles = [-35, 35]
 
@@ -72,10 +71,7 @@ for image, label, count in zip(images, labels, count):
 
     for _ in range(output_per_image):
 
-
         if is_blank(image):
-
-
             #Rotação
             if np.random.rand() < 0.9:
                 angle = np.random.uniform(rotation_angles[0], rotation_angles[1]) #Rotação entre -60 a 60 graus
@@ -135,7 +131,7 @@ for image, label, count in zip(images, labels, count):
 
             # Zoom
             if np.random.rand() < 0.6:
-                zoom_factor = np.random.uniform(0.8, 1.2)  # Adjust the range as needed
+                zoom_factor = np.random.uniform(0.8, 1.2)
                 zoomed_image = zoom(cropped_image, (zoom_factor, zoom_factor, 1), order=1)
             else:
                 zoomed_image = cropped_image
@@ -145,7 +141,8 @@ for image, label, count in zip(images, labels, count):
 
             new_images.append(zoomed_image)
             new_labels.append(label)
-
+            
+            #Salva imagem e atualizada df
             image_uint8 = (zoomed_image * 255).astype(np.uint8)
             filename = f'imagem{121 + len(new_images)}.png'
             io.imsave(os.path.join('/content/drive/MyDrive/PROJETO_ZOOMBEE/augmentation/', filename), image_uint8)
