@@ -1,0 +1,156 @@
+import os
+from skimage import io, transform
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from skimage.io import imread
+from skimage import exposure
+from collections import Counter
+import gc
+from scipy.ndimage import zoom
+%matplotlib inline
+
+rotation_angles = [-35, 35]
+
+metadata = pd.read_csv('images_catalogo_md.csv')
+metadata['path'] = metadata['path'].str.replace('IMAGENS_ANOTADAS', '/content/drive/MyDrive/PROJETO_ZOOMBEE/IMAGENS_CATALOGO/imgs_catalogo')
+
+metadata.to_csv('new_metadata_imagens_ajustadas_01_12_23.csv')
+metadata = metadata.drop(columns=['Unnamed: 0', 'label'])
+
+count_classes = Counter(metadata['label_numeric'])
+
+metadata['count_class'] = metadata['label_numeric'].map(count_classes)
+
+images = []
+labels = []
+count = []
+
+for row in metadata.iterrows():
+    images.append(imread(row[1]['path']))
+    labels.append(row[1]['label_numeric'])
+    count.append(row[1]['count_class'])
+
+new_images = []
+new_labels = []
+
+samples = 4
+max_count = max(metadata['count_class'])
+
+
+def is_blank(image, white_threshold=0.9, white_range=(240, 255)):
+    image_array = np.array(image)  # Ensure image is a NumPy array
+    rgb_image = image_array[:, :, :3]
+    white_pixel_count = np.sum(np.all((rgb_image >= white_range[0]) & (rgb_image <= white_range[1]), axis=-1))
+    total_pixels = np.prod(image_array.shape[:-1])
+    white_percentage = white_pixel_count / total_pixels
+    return white_percentage <= white_threshold
+
+
+for image, label, count in zip(images, labels, count):
+
+    if(count == 33):
+        output_per_image = 2 * samples
+    elif(count == 12):
+        output_per_image = 3 * samples
+    elif(count == 9):
+        output_per_image = 4 * samples
+    elif(count == 1):
+        output_per_image = 40 * samples
+    elif(count == 2):
+        output_per_image = 20 * samples
+    elif(count == 4):
+        output_per_image = 10 * samples
+    elif(count == 19):
+        output_per_image = 3 * samples
+    elif(count == 7):
+        output_per_image = 5 * samples
+    else:
+        output_per_image = 3 * samples
+
+    print('Label: ' + str(label) + ', Número de imagems geradas: ' + str(output_per_image))
+
+    for _ in range(output_per_image):
+
+
+        if is_blank(image):
+
+
+            #Rotação
+            if np.random.rand() < 0.9:
+                angle = np.random.uniform(rotation_angles[0], rotation_angles[1]) #Rotação entre -60 a 60 graus
+                rotated_image = transform.rotate(image, angle)
+            else:
+                rotated_image = image
+
+            #Flip Horizontal
+            if np.random.rand() < 0.9:
+                horizontal_flip_image = np.fliplr(rotated_image) #Flip na imagem
+            else:
+                horizontal_flip_image = rotated_image
+
+            # Flip vertical
+            if np.random.rand() < 0.4:
+                horizontal_flip_image = np.flipud(horizontal_flip_image)
+
+            translated_image = horizontal_flip_image
+
+            # Alteração de escala
+            if np.random.rand() < 0.9:
+                scale_factor = np.random.uniform(0.5, 1.5)
+                scaled_image = transform.rescale(translated_image, scale_factor, mode='reflect', multichannel=True)
+            else:
+                scaled_image = translated_image
+
+
+            #Gamma(Altera o Brilho da imagem)
+            if np.random.rand() < 0.9:
+                gamma = np.random.uniform(0.1, 2.0)
+                brightened_image = exposure.adjust_gamma(horizontal_flip_image, gamma)
+            else:
+                brightened_image = horizontal_flip_image
+
+            #Melhora o Contraste
+            if np.random.rand() < 0.9:
+                v_min, v_max = np.percentile(brightened_image, (0.2, 99.8))
+                better_contrast = exposure.rescale_intensity(brightened_image, in_range=(v_min, v_max))
+            else:
+                better_contrast = brightened_image
+
+
+            #Crop
+            if np.random.rand() < 0.6:
+                h, w = better_contrast.shape[:2]
+                crop_height = int(np.random.uniform(0.8, 1.0) * h)
+                crop_width = int(np.random.uniform(0.8, 1.0) * w)
+                margin_top = np.random.randint(0, int(0.2 * h))
+                margin_left = np.random.randint(0, int(0.2 * w))
+                top = np.random.randint(0, max(1, h - crop_height - margin_top))
+                left = np.random.randint(0, max(1, w - crop_width - margin_left))
+                cropped_image = better_contrast[top:top + crop_height, left:left + crop_width]
+                cropped_image = transform.resize(cropped_image, (224, 224))
+            else:
+                cropped_image = better_contrast
+
+
+            # Zoom
+            if np.random.rand() < 0.6:
+                zoom_factor = np.random.uniform(0.8, 1.2)  # Adjust the range as needed
+                zoomed_image = zoom(cropped_image, (zoom_factor, zoom_factor, 1), order=1)
+            else:
+                zoomed_image = cropped_image
+
+            plt.imshow(zoomed_image)
+            plt.show()
+
+            new_images.append(zoomed_image)
+            new_labels.append(label)
+
+            image_uint8 = (zoomed_image * 255).astype(np.uint8)
+            filename = f'imagem{121 + len(new_images)}.png'
+            io.imsave(os.path.join('/content/drive/MyDrive/PROJETO_ZOOMBEE/augmentation/', filename), image_uint8)
+
+            new_row = {'path': '/content/drive/MyDrive/PROJETO_ZOOMBEE/augmentation/' + filename, 'label_numeric': label}
+            metadata = metadata.append(new_row, ignore_index=True)
+
+            gc.collect()
