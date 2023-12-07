@@ -13,6 +13,25 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 
+class AnimalImageDataset(Dataset):
+    def __init__(self, csv_file, root_dir, transform=None):
+        self.annotations = pd.read_csv(csv_file)
+        self.root_dir = root_dir
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.annotations)
+
+    def __getitem__(self, index):
+        img_name = self.annotations['path'][index]
+        image = io.imread(img_name)
+        y_label = torch.tensor(self.annotations['label_numeric'][index])
+
+        if self.transform:
+            image = self.transform(image)
+
+        return image, y_label
+
 
 treino = pd.read_csv('training_data_d1.csv')
 teste = pd.read_csv('testing_data_d1.csv')
